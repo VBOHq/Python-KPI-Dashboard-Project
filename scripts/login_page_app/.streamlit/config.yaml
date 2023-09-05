@@ -1,0 +1,18 @@
+cookie:
+  expiry_days: 30
+  key: key23
+  name: devopauth
+credentials:
+  usernames:
+    tertimothy:
+      email: tertimothy@gmail.com
+      name: Yaji Timothy
+      password: $2b$12$TDMCRfo3Uez6i/jlzi68dOe1/fGTuR2PNWdi0PFZSyz/pbusF6n5y
+preauthorized:
+  emails:
+  - taiwoomotsehin6@gmail.com
+  - olasegirioluwafemi@gmail.com
+  - tayo@alaye.page
+  - ndi@vbohq.net
+  - yajijoe@gmail.com
+  - tertimothy@yahoo.com
