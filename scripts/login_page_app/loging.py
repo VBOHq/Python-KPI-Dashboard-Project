@@ -3,15 +3,31 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 import yagmail
-import os
 import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 
 
 
-# Gmail SMTP configuration
 
+# Function to send emails
+def send_email(to_email, subject, Message_body):
+    # function to send email to user
+    sender_email = "tertimothy@gmail.com"
+    receiver_email = to_email
+    app_password = "ikilyacpasuvfcgg"  # Replace with your generated App Password
+
+    try:
+        # Send email using yagmail
+        yag = yagmail.SMTP(sender_email, app_password)
+        subject = subject
+        message = Message_body
+        yag.send(to=receiver_email, subject=subject, contents=message)
+        yag.close()
+        st.success("Email sent successfully!")
+    except Exception as e:
+        st.error("check your network or try again later!.")
+    return
 
 
 #function to formmat number 
@@ -451,11 +467,11 @@ if authentication_status:
 
                     # Download button for calculated values
                     csv_download = st.download_button("Download Affiliate Lab Values as CSV", affiliate_values_df.to_csv(index=False), file_name="affiliate_values.csv", mime="text/csv") 
-
+#Change your pass word
 if authentication_status:
     try:
-        if authenticator.reset_password(username, 'Change password', "sidebar"):
-            st.success('Password modified successfully')
+        if authenticator.reset_password(username, "Change password", "sidebar"):
+            st.sidebar.success("Password Changed successfully")                   
     except Exception as e:
         st.error(e)   
         
@@ -468,27 +484,12 @@ if authentication_status:
             submitted = st.form_submit_button('Submit')
 
             if submitted:
-                # Gmail SMTP configuration
-                sender_email = "tertimothy@gmail.com"
-                receiver_email = email
-                app_password = "ikilyacpasuvfcgg"  # Replace with your generated App Password
-
-                try:
-                    # Send email using yagmail
-                    yag = yagmail.SMTP(sender_email, app_password)
-                    subject = "User Feedback"
-                    message = f"Name: {FullName}\nemail: {email}\nComments: {Comments}"
-                    yag.send(
-                        to=receiver_email,
-                        subject=subject,
-                        contents=message
-                        )
-                    yag.close()
-
-                    st.success("Email sent successfully!")
-                except Exception as e:
-                    st.error("Error sending email. Please try again later.")
-                    st.error(str(e))
+                # Random password to be transferred to user securely
+                send_email(to_email=email,
+                   subject="User Feedback",
+                   Message_body= f"Name: {FullName}\nemail: {email}\n {Comments}")
+                
+                
 elif authentication_status == False:
     st.error('Username/password is incorrect')
 elif authentication_status == None:
@@ -497,27 +498,12 @@ elif authentication_status == None:
 try:
     username_forgot_pw, email_forgot_password, random_password = authenticator.forgot_password('Reset password',"sidebar")
     if username_forgot_pw:
-        st.success('New password sent securely')
+        st.sidebar.success('New password sent securely')
         # Random password to be transferred to user securely
-        sender_email = "tertimothy@gmail.com"
-        receiver_email = email_forgot_password
-        app_password = "ikilyacpasuvfcgg"  # Replace with your generated App Password
+        send_email(to_email=email_forgot_password,
+                   subject="Password Reset",
+                   Message_body= f"Enter this password: {random_password }\n Then set your new password")
         
-        try:
-            # Send email using yagmail
-            yag = yagmail.SMTP(sender_email, app_password)
-            subject = "Password Reset"
-            message = f"Enter this passwored: {random_password }\n Then set your new pass word"
-            yag.send(
-                to=receiver_email,
-                subject=subject,
-                contents=message
-                )
-            yag.close()
-            
-            st.success("Email sent successfully!\ncheck you email for reset code")
-        except Exception as e:
-            st.error("check your network or try again later!.") 
     elif username_forgot_pw == False:
         st.error('Username not found')
 except Exception as e:
@@ -528,26 +514,14 @@ with open(r"C:\Users\USER\Desktop\SalesPipeLine_app\.streamlit\config.yaml", 'w'
 # Register new user
 try:
     if authenticator.register_user("Register new user", "sidebar", preauthorization=True):
-        st.success("User registered successfully! Make sure you keep your password securely. ")
+        st.sidebar.success("User registered successfully! Make sure you keep your password securely. ")
         sender_email = "tertimothy@gmail.com"
         receiver_email = email
         app_password = "ikilyacpasuvfcgg"  # Replace with your generated App Password
+        send_email(to_email=email,
+                   subject="User Registration",
+                   Message_body= f"Thank you {name} for registering  with us, your username is: {username } \n Please Note! this message is auto generated ***DO NOT REPLAY!***\n Best Regards \n DataOp Team!")
         
-        try:
-            # Send email using yagmail
-            yag = yagmail.SMTP(sender_email, app_password)
-            subject = "User Registration"
-            message = f"Thank you {name} for registering  with us, your username is: {username } \n Please Note! this message is auto generated ***DO NOT REPLAY!***\n Best Regards \n DataOp Team!"
-            yag.send(
-                to=receiver_email,
-                subject=subject,
-                contents=message
-                )
-            yag.close()
-            
-            st.success("Email sent successfully!\ncheck you email for your detals")
-        except Exception as e:
-            st.error("check your network or try again later!.") 
 except Exception as e:
     st.error(e)
 
