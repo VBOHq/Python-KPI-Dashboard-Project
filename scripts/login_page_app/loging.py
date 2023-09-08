@@ -205,9 +205,7 @@ if authentication_status:
                     "Verification_percent": Verification_percent,
                     "ID_Resolution_Match_percent": ID_Resolution_Match_percent
                 }
-                input_df = pd.DataFrame([input_data])
-
-                            
+                input_df = pd.DataFrame([input_data])                          
             
                 st.markdown('## SuperPixel Metrics')
                 col1, col2, col3 = st.columns(3)
